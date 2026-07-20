@@ -1,0 +1,137 @@
+from gpiozero import InputDevice, OutputDevice
+
+# ==========================
+# Inputs
+# ==========================
+
+start_button = InputDevice(1)
+brake_pedal = InputDevice()
+ignition_run_signal = InputDevice()
+engine_running = InputDevice()
+driver_door = InputDevice()
+passenger_door = InputDevice()
+headlight_switch = InputDevice()
+high_beam_switch = InputDevice()
+ambient_light_sensor = InputDevice()
+right_turn_signal = InputDevice()
+left_turn_signal = InputDevice()
+hazard_switch = InputDevice()
+wiper_switch = InputDevice()
+washer_switch = InputDevice()
+horn_button = InputDevice()
+door_lock_button = InputDevice()
+door_unlock_button = InputDevice()
+hatch_release_button = InputDevice()
+rain_sensor = InputDevice()
+fuel_sensor = InputDevice()
+clutch_switch = InputDevice()
+parking_brake = InputDevice()
+reverse_signal = InputDevice()
+vehicle_speed = InputDevice()
+coolant_temp = InputDevice()
+oil_pressure = InputDevice()
+battery_voltage = InputDevice()
+
+# ==========================
+# Outputs
+# ==========================
+
+starter_relay = OutputDevice(1)
+ignition_relay = OutputDevice()
+accessory_relay = OutputDevice()
+lock_relay = OutputDevice()
+unlock_relay = OutputDevice()
+headlights = OutputDevice()
+dome_lights = OutputDevice()
+horn_relay = OutputDevice()
+turn_signal_relay = OutputDevice()
+wiper_relay = OutputDevice()
+hatch_relay = OutputDevice()
+parking_lights = OutputDevice()
+high_beam_relay = OutputDevice()
+left_turn_signal_relay = OutputDevice()
+right_turn_signal_relay = OutputDevice()
+hazard_flasher = OutputDevice()
+washer_pump = OutputDevice()
+low_speed_wiper = OutputDevice()
+high_speed_wiper = OutputDevice()
+low_speed_cooling_fan = OutputDevice()
+high_speed_cooling_fan = OutputDevice()
+reverse_lights = OutputDevice()
+brake_lights = OutputDevice()
+fuel_door_popper = OutputDevice()
+welcome_puddle_lights = OutputDevice()
+driver_heated_seat = OutputDevice()
+driver_cooled_seat = OutputDevice()
+passenger_heated_seat = OutputDevice()
+passenger_cooled_seat = OutputDevice()
+
+# ==========================
+# Features
+# ==========================
+
+def start_system():
+
+
+def automatic_headlights():
+    pass
+
+def automatic_dome_light_fade():
+    pass
+
+def crank_timeout():
+    pass
+
+def automatic_wipers():
+    pass
+
+def retained_accessory_power():
+    pass
+
+def one_touch_lock_unlock():
+    pass
+
+def panic_mode():
+    pass
+
+def welcome_lights():
+    pass
+
+def follow_me_home():
+    pass
+
+def auto_unlock():
+    pass
+
+def auto_lock():
+    pass
+
+def headlight_reminder():
+    pass
+
+def battery_saver():
+    pass
+
+def tap_to_wipe():
+    pass
+
+# ==========================
+# Main Loop
+# ==========================
+
+while True:
+    start_system()
+    automatic_headlights()
+    automatic_dome_light_fade()
+    crank_timeout()
+    automatic_wipers()
+    retained_accessory_power()
+    one_touch_lock_unlock()
+    panic_mode()
+    welcome_lights()
+    follow_me_home()
+    auto_unlock()
+    auto_lock()
+    headlight_reminder()
+    battery_saver()
+    tap_to_wipe()

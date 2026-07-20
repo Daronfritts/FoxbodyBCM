@@ -1,0 +1,20 @@
+{
+    "system": {
+        "name": "Foxbody BCM",
+        "version": "1.0.0"
+    },
+
+    "logging": {
+        "enabled": true,
+        "level": "INFO"
+    },
+
+    "lighting": {
+        "auto_lights": true,
+        "coming_home_time": 60
+    },
+
+    "security": {
+        "enabled": true
+    }
+}

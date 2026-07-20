@@ -1,0 +1,10 @@
+{
+    "vehicle": {
+        "year": 1988,
+        "make": "Ford",
+        "model": "Mustang LX",
+        "engine": "302 V8",
+        "transmission": "Manual",
+        "ecu": "MicroSquirt"
+    }
+}
