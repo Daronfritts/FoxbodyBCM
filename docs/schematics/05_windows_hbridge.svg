@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="950" viewBox="0 0 1600 950">
+<style>
+text{font-family:Arial,sans-serif;fill:#111}.t{font-size:30px;font-weight:700}.h{font-size:20px;font-weight:700}.s{font-size:16px}.p{stroke:#c62828;stroke-width:5;fill:none}.g{stroke:#111;stroke-width:4;fill:none}.sig{stroke:#1565c0;stroke-width:4;fill:none}.ctl{stroke:#ef6c00;stroke-width:4;fill:none}.mot{stroke:#2e7d32;stroke-width:5;fill:none}.ana{stroke:#6a1b9a;stroke-width:4;fill:none}.box{fill:#fff;stroke:#111;stroke-width:3}.term{fill:#fff;stroke:#111;stroke-width:2}
+</style>
+<text x="40" y="50" class="t">FOXBODY BCM - POWER WINDOWS - MDD20A H-BRIDGE</text>
+<text x="40" y="82" class="s">Both window motors on one dual-channel driver. Switches are inputs only.</text>
+
+<text x="55" y="150" class="h">BATTERY +12V</text><line x1="90" y1="170" x2="90" y2="220" class="p"/>
+<rect x="55" y="220" width="150" height="50" class="box"/><text x="78" y="252" class="s">WINDOW FUSE</text>
+<line x1="205" y1="245" x2="360" y2="245" class="p"/>
+
+<rect x="360" y="130" width="450" height="330" class="box"/><text x="500" y="168" class="h">CYTRON MDD20A</text>
+<circle cx="360" cy="245" r="8" class="term"/><text x="380" y="250" class="s">VM / +12V POWER</text>
+<circle cx="360" cy="405" r="8" class="term"/><text x="380" y="410" class="s">GND</text>
+<circle cx="810" cy="220" r="8" class="term"/><text x="675" y="210" class="s">M1A</text>
+<circle cx="810" cy="275" r="8" class="term"/><text x="675" y="265" class="s">M1B</text>
+<circle cx="810" cy="340" r="8" class="term"/><text x="675" y="330" class="s">M2A</text>
+<circle cx="810" cy="395" r="8" class="term"/><text x="675" y="385" class="s">M2B</text>
+<circle cx="510" cy="460" r="8" class="term"/><text x="440" y="442" class="s">CH1 DIR/PWM</text>
+<circle cx="670" cy="460" r="8" class="term"/><text x="600" y="442" class="s">CH2 DIR/PWM</text>
+
+<line x1="810" y1="220" x2="1030" y2="220" class="mot"/><line x1="810" y1="275" x2="1030" y2="275" class="mot"/>
+<rect x="1030" y="180" width="235" height="135" rx="14" class="box"/><text x="1065" y="225" class="h">DRIVER WINDOW</text><text x="1080" y="265" class="s">2-wire motor</text>
+<line x1="810" y1="340" x2="1030" y2="340" class="mot"/><line x1="810" y1="395" x2="1030" y2="395" class="mot"/>
+<rect x="1030" y="325" width="235" height="135" rx="14" class="box"/><text x="1045" y="370" class="h">PASSENGER WINDOW</text><text x="1080" y="410" class="s">2-wire motor</text>
+
+<line x1="360" y1="405" x2="300" y2="405" class="g"/><line x1="300" y1="405" x2="300" y2="530" class="g"/><text x="210" y="565" class="h">CHASSIS GROUND</text><line x1="250" y1="530" x2="350" y2="530" class="g"/><line x1="270" y1="545" x2="330" y2="545" class="g"/><line x1="290" y1="560" x2="310" y2="560" class="g"/>
+
+<rect x="55" y="635" width="420" height="220" class="box"/><text x="115" y="675" class="h">24DIB32 INPUT BOARD</text>
+<circle cx="475" cy="720" r="8" class="term"/><text x="245" y="725" class="s">X13 DRIVER UP</text>
+<circle cx="475" cy="765" r="8" class="term"/><text x="245" y="770" class="s">X14 DRIVER DOWN</text>
+<circle cx="475" cy="810" r="8" class="term"/><text x="245" y="815" class="s">X15 PASSENGER UP</text>
+<circle cx="475" cy="850" r="8" class="term"/><text x="245" y="855" class="s">X16 PASSENGER DOWN</text>
+
+<rect x="580" y="635" width="280" height="220" class="box"/><text x="645" y="675" class="h">WINDOW SWITCHES</text>
+<text x="610" y="725" class="s">DR UP</text><text x="610" y="770" class="s">DR DOWN</text><text x="610" y="815" class="s">PS UP</text><text x="610" y="855" class="s">PS DOWN</text>
+<line x1="580" y1="720" x2="475" y2="720" class="sig"/><line x1="580" y1="765" x2="475" y2="765" class="sig"/><line x1="580" y1="810" x2="475" y2="810" class="sig"/><line x1="580" y1="850" x2="475" y2="850" class="sig"/>
+<line x1="820" y1="835" x2="820" y2="900" class="g"/><text x="745" y="925" class="s">Switch common -> ground</text>
+
+<rect x="980" y="600" width="500" height="270" class="box"/><text x="1110" y="640" class="h">BCM LOGIC / DRIVER CONTROL</text>
+<text x="1020" y="700" class="s">DR_WIN_DIR / DR_WIN_PWM</text><text x="1020" y="755" class="s">PS_WIN_DIR / PS_WIN_PWM</text>
+<line x1="980" y1="695" x2="510" y2="695" class="ctl"/><line x1="510" y1="695" x2="510" y2="460" class="ctl"/>
+<line x1="980" y1="750" x2="670" y2="750" class="ctl"/><line x1="670" y1="750" x2="670" y2="460" class="ctl"/>
+<text x="1020" y="810" class="s">Dead-time + current limit + timeout enforced in software.</text>
+
+<rect x="1270" y="175" width="260" height="285" class="box"/><text x="1310" y="215" class="h">CURRENT SENSING</text>
+<text x="1300" y="265" class="s">Driver hall sensor</text><text x="1300" y="310" class="s">Passenger hall sensor</text><text x="1300" y="355" class="s">Sensor outputs -> ADC</text><text x="1300" y="400" class="s">ADC -> BCM</text>
+<line x1="1265" y1="247" x2="1270" y2="247" class="ana"/><line x1="1265" y1="392" x2="1270" y2="392" class="ana"/>
+</svg>
