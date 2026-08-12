@@ -3,17 +3,33 @@
 Status: CONSOLIDATED BASELINE
 Last updated: 2026-08-12
 
+## Simple names used throughout the project
+
+Use these functional names in schematics, code comments and normal discussion. The model number stays documented for terminal references and purchasing.
+
+- **BCM Controller** = Raspberry Pi 4B, 8 GB.
+- **Input Board** = 24DIB32 NPN 32-channel isolated digital input / RS485 board.
+- **Output Board** = OPMSD16 PNP 16-channel 12 V MOSFET output board.
+- **Window Driver** = Cytron MDD20A dual H-bridge motor driver.
+- **Lock Driver** = Cytron MDD10A dual H-bridge motor driver.
+- **I/O Expander** = MCP23017.
+- **LIN Adapter** = TJA1020 TTL-LIN interface.
+- **RS485 Adapter** = isolated USB-RS485/RS422 adapter.
+- **Aux MOSFET Board** = 4-channel low-side MOSFET board, approximately 5 A/channel class.
+- **Relay Board** = 8-channel 12 V relay board.
+- **Analog Board** = protected ADC/front-end hardware; exact model still to be frozen.
+
 ## Hardware already owned / previously identified
 
-- Raspberry Pi 4B, 8 GB.
+- BCM Controller (Raspberry Pi 4B, 8 GB).
 - 1 TB NVMe storage via USB.
-- 24DIB32 NPN 32-channel isolated digital input / RS485 board.
-- OPMSD16 PNP 16-channel 12 V MOSFET output board.
-- MCP23017 GPIO expanders.
-- TTL-LIN interface based on TJA1020.
-- Isolated USB-RS485/RS422 adapter.
-- 4-channel low-side MOSFET board, approximately 5 A/channel class.
-- 8-channel 12 V relay board.
+- Input Board (24DIB32 NPN 32-channel isolated digital input / RS485 board).
+- Output Board (OPMSD16 PNP 16-channel 12 V MOSFET output board).
+- I/O Expanders (MCP23017).
+- LIN Adapter (TJA1020).
+- RS485 Adapter (isolated USB-RS485/RS422).
+- Aux MOSFET Board (4-channel low-side MOSFET, approximately 5 A/channel class).
+- Relay Board (8-channel 12 V relay board).
 - Rain-sensor hardware currently on hand, but the final rain sensor may be replaced with a more automotive-suitable optical unit.
 - Miscellaneous current sensors already discussed/purchased; exact ratings must be verified before final assignment.
 - Raspberry Pi / vehicle networking hardware already used elsewhere in the project.
@@ -22,7 +38,7 @@ Last updated: 2026-08-12
 
 Do not buy relay pairs for the windows/locks. The correct missing hardware is:
 
-### 1 x Cytron MDD20A
+### 1 x Window Driver (Cytron MDD20A)
 
 Purpose: both power-window motors.
 
@@ -32,7 +48,7 @@ Purpose: both power-window motors.
 - Gives the BCM forward/reverse control without mechanical reversing relays.
 - Use current sensing separately for obstruction/end-stop logic.
 
-### 1 x Cytron MDD10A
+### 1 x Lock Driver (Cytron MDD10A)
 
 Purpose: both door-lock actuators.
 
@@ -50,14 +66,14 @@ Likely relay uses after final verification:
 - Starter-solenoid control.
 - Main ignition or accessory isolation if required by the final fail-safe design.
 - Headlamp main/high-beam power if current or fallback strategy makes relay control preferable.
-- Rear defrost if the grid current is above the MOSFET board's safe verified load rating.
+- Rear defrost if the grid current is above the Output Board's safe verified load rating.
 - Horn if preferred for isolation/current handling.
 - Cooling-fan enable/contactors only if the final PWM/fan controller requires them.
 - Spare/emergency bypass circuits.
 
-Do not use Bosch relays as the normal reversing method for windows or door locks once the H-bridge boards are installed.
+Do not use Bosch relays as the normal reversing method for windows or door locks once the Window Driver and Lock Driver are installed.
 
-## OPMSD16 role
+## Output Board role
 
 Use for outputs that are within its verified voltage/current/thermal envelope, including suitable one-direction loads and control signals. Potential examples include:
 
@@ -69,9 +85,9 @@ Use for outputs that are within its verified voltage/current/thermal envelope, i
 
 Final allocation depends on measured load current and verified board specifications.
 
-## 24DIB32 role
+## Input Board role
 
-The 24DIB32 is the primary discrete-input board.
+The Input Board is the primary discrete-input board.
 
 It reads:
 
@@ -85,7 +101,7 @@ Factory signals that present raw +12 V must be conditioned appropriately for the
 
 ## Analog / sensor interface still required in final design
 
-The Pi has no native analog inputs. A protected ADC/sensor interface is required for analog values such as:
+The BCM Controller has no native analog inputs. A protected Analog Board is required for analog values such as:
 
 - Fuel sender.
 - Battery voltage if not taken solely from another trusted source.
@@ -106,7 +122,7 @@ The exact ADC part is not yet frozen. Do not buy a random ADC solely from an old
 - Exact battery-current sensor rating.
 - Exact driver/passenger window-current sensor ratings.
 - Exact fan-current sensor rating.
-- ADC/front-end hardware.
+- Analog Board / front-end hardware.
 
 ## Purchase rule from this point forward
 
