@@ -1,0 +1,76 @@
+{
+  "digital_inputs": {
+    "driver_door": "X00",
+    "passenger_door": "X01",
+    "hatch_ajar": "X02",
+    "hood_open": "X03",
+    "brake": "X04",
+    "clutch": "X05",
+    "parking_brake": "X06",
+    "reverse": "X07",
+    "start_button": "X08",
+    "defrost_button": "X09",
+    "hatch_button": "X10",
+    "lock_button": "X11",
+    "unlock_button": "X12",
+    "driver_window_up": "X13",
+    "driver_window_down": "X14",
+    "passenger_window_up": "X15",
+    "passenger_window_down": "X16",
+    "wiper_mist": "X17",
+    "wiper_intermittent": "X18",
+    "wiper_low": "X19",
+    "wiper_high": "X20",
+    "washer": "X21",
+    "headlight_switch": "X22",
+    "high_beam_switch": "X23",
+    "left_turn": "X24",
+    "right_turn": "X25",
+    "hazard": "X26",
+    "ignition_run_sense": "X27",
+    "wiper_park": "X28",
+    "fuel_door_button": "X29",
+    "spare_30": "X30",
+    "spare_31": "X31"
+  },
+  "mosfet_outputs": {
+    "parking_lamps": "Y01",
+    "headlamp_enable": "Y02",
+    "high_beam_enable": "Y03",
+    "left_turn_output": "Y04",
+    "right_turn_output": "Y05",
+    "horn_control": "Y06",
+    "rear_defrost_control": "Y07",
+    "hatch_release": "Y08",
+    "fuel_door_release": "Y09",
+    "aux_10": "Y10",
+    "aux_11": "Y11",
+    "aux_12": "Y12",
+    "aux_13": "Y13",
+    "wiper_low_control": "Y14",
+    "wiper_high_control": "Y15",
+    "washer_control": "Y16"
+  },
+  "hbridges": {
+    "mdd20a": {
+      "channel_1": "driver_window",
+      "channel_2": "passenger_window"
+    },
+    "mdd10a": {
+      "channel_1": "driver_lock",
+      "channel_2": "passenger_lock"
+    }
+  },
+  "analog_symbolic": [
+    "fuel_level",
+    "battery_voltage",
+    "battery_current",
+    "driver_window_current",
+    "passenger_window_current",
+    "fan_current_1",
+    "fan_current_2",
+    "oil_pressure",
+    "fuel_pressure"
+  ],
+  "status": "provisional_until_terminal_and_load_verification"
+}
