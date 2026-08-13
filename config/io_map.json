@@ -51,14 +51,26 @@
     "wiper_high_control": "Y15",
     "washer_control": "Y16"
   },
-  "hbridges": {
-    "mdd20a": {
+  "motor_drivers": {
+    "window_driver": {
+      "type": "dual_high_current_hbridge",
+      "supply_range": "9-30V",
+      "logic": "3.3V_or_5V",
+      "advertised_max_current": "60A module",
       "channel_1": "driver_window",
-      "channel_2": "passenger_window"
+      "channel_2": "passenger_window",
+      "control": "direction_A_B_plus_PWM_PA_PB",
+      "status": "selected_ordered_pending_bench_verification"
     },
-    "mdd10a": {
+    "lock_driver": {
+      "type": "dual_hbridge",
+      "supply_range": "3-14V",
+      "logic_input_range": "2.2-6V",
+      "continuous_current_per_channel": "5A",
+      "peak_current_per_channel": "9A",
       "channel_1": "driver_lock",
-      "channel_2": "passenger_lock"
+      "channel_2": "passenger_lock",
+      "status": "selected_pending_bench_verification"
     }
   },
   "analog_symbolic": [
