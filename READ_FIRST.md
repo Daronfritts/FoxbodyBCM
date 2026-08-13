@@ -6,31 +6,34 @@ This file is the first thing to read before changing BCM code, wiring plans or h
 
 ## Current milestone
 
-The full v1 schematic set now exists at the subsystem level. Next: verify exact physical board terminals, freeze the Output Board logic interface and Analog Board, add final wire gauges/colors/connectors, then implement the real BCM software around the frozen map.
+The v1 subsystem schematic set exists and Python implementation has started. Next: bench-verify exact physical terminals, finalize Output Board interface and Analog Board, add final wire gauges/colors/connectors, then continue feature modules against the frozen symbolic I/O map.
 
 ## Current architecture decisions
 
-- Raspberry Pi 4B is the high-level **BCM Controller**.
+- Raspberry Pi 4B is the **BCM Controller**.
 - Eletechsup 24DIB32 NPN is the **Input Board**.
 - Eletechsup OPMSD16 PNP 12V is the **Output Board**.
-- Cytron MDD20A is the **Window Driver**: one channel per window motor.
-- Cytron MDD10A is the **Lock Driver**: one channel per lock actuator.
-- Do NOT design reversing Bosch-relay pairs for windows or locks.
-- Output Board project ceiling is 4A continuous per channel; heavier/inrush loads use a relay or dedicated driver.
-- Bosch-style relays are intentionally limited mainly to starter control, headlight/high-beam power, horn, rear defrost, ignition/accessory isolation and any final high-current fan enable stage that actually requires one.
+- **Window Driver** = selected dual high-current H-bridge, 9-30V supply, 3.3/5V control, A/B direction plus PA/PB PWM; one channel per window.
+- **Lock Driver** = selected dual H-bridge, 3-14V supply, 2.2-6V logic, 5A continuous / 9A peak per channel; one channel per lock actuator.
+- Windows and locks do NOT use reversing Bosch relay pairs.
+- Output Board project ceiling is 4A continuous per channel; heavier/inrush/safety loads use a relay or dedicated driver.
+- Bosch-style relays are intentionally limited mainly to starter control and verified heavy/isolation loads such as rear defrost/headlights where required.
 - Cooling-fan motor current uses separate high-current feeds/drivers and does not pass through the Output Board.
 - Factory gauge cluster is removed; BCM owns fuel level and publishes it to the digital dash.
 - MicroSquirt owns engine management and remains independent from BCM convenience/security logic.
+- Selected BCM 5V supply is a 12/24V -> 5V, 10A / 50W DC-DC converter; vehicle-side fuse/transient protection is still required.
 
-## Important newly verified interface fact
+## Important Output Board interface fact
 
-The owned Output Board is the **12V-input OPMSD16 version**. Its X1-X16 control inputs require the 8-25V control range for that version, while Pi/MCP23017 logic is only 3.3/5V. Therefore Pi GPIO must NOT connect directly to Output Board X1-X16.
+The owned Output Board is the 12V-input OPMSD16 version. Its X1-X16 control inputs use the higher-voltage control range while Pi/MCP23017 logic is only 3.3/5V. Pi GPIO must therefore NOT connect directly to Output Board X1-X16.
 
-A 16-channel, 3.3V-compatible sinking logic interface must be frozen between the BCM logic and Output Board. This is now explicitly shown on `docs/schematics/03_output_board.svg` rather than being hidden or assumed.
+The exact sinking/level interface is still to be frozen and remains shown as an interface stage on `docs/schematics/03_output_board.svg`.
 
 ## Superseded information
 
-Any previous relay-heavy schematic showing paired reversing relays for every window/door-lock motor is superseded and must not be used for vehicle wiring.
+- Relay-heavy window/lock reversing circuits are superseded.
+- Cytron MDD20A/MDD10A are no longer the selected window/lock hardware.
+- Legacy direct-RPi.GPIO feature scripts are superseded by the HAL/runtime architecture.
 
 ## Source-of-truth files
 
@@ -46,8 +49,6 @@ Read in this order:
 8. `config/io_map.json`
 9. `docs/schematics/README.md` and the SVG schematic sheets
 
-Existing historical/research docs remain useful, but if they conflict with the files above, the files above win unless intentionally revised.
-
 ## Current schematic files
 
 - `docs/schematics/01_core_power.svg`
@@ -61,37 +62,30 @@ Existing historical/research docs remain useful, but if they conflict with the f
 - `docs/schematics/09_cooling_fans.svg`
 - `docs/schematics/10_sensors_analog_comms.svg`
 
-F00-F23 now have design amperage values in `docs/24_fuse_schedule.md` and on the applicable schematic sheets.
+F00-F23 have design amperage values in `docs/24_fuse_schedule.md` and on applicable sheets. The drawings are editable vector source but are not INSTALLATION RELEASE until exact terminal order, wire gauge/color, connector IDs and measured/verified heavy-load currents are added.
 
-The drawings are editable vector source. The architecture is laid out, but the set is not marked INSTALLATION RELEASE until exact physical terminal order, new-harness wire gauge/color, connector IDs and measured/verified heavy-load currents are added.
+## Python architecture now active
 
-## Current code base
+- `main.py` runs a 50Hz cooperative control loop.
+- `runtime.py` schedules non-blocking feature modules.
+- `hardware.py` is the symbolic hardware abstraction layer.
+- `gpio_manager.py` is currently the safe simulation/stub layer until real Input/Output Board drivers are bound.
+- `motor_manager.py` abstracts all reversible H-bridge motors.
+- `modules/windows.py` now controls driver/passenger windows non-blocking with reversal dead-time and run timeout hooks.
+- `modules/door_locks.py` now controls driver/passenger lock actuators with non-blocking timed pulses.
 
-Existing code includes:
-
-- `main.py`
-- `config.py`
-- `hardware.py`
-- `gpio_manager.py`
-- `logger.py`
-- `event_bus.py`
-- startup infrastructure
-- feature modules under `modules/`
-
-The software architecture rule is: feature modules use symbolic names; raw board channels live only in config/HAL.
+Rule: feature modules use symbolic names only. Raw Pi pins, RS485 registers, Output Board channels and physical H-bridge pins belong only in driver/HAL code.
 
 ## Next tasks
 
-1. Verify exact physical terminal layout/polarity of the Input Board and Output Board in hand.
-2. Freeze the 16-channel logic-to-12V sinking interface for Output Board X1-X16.
-3. Freeze the Analog Board/front-end for fuel, voltage and current sensing.
-4. Copy exact factory connector IDs/pins and relevant factory wire colors from the 1988 EVTM/donor harness.
-5. Assign final new-harness wire gauges, colors and splice IDs.
-6. Measure/verify heavy loads and adjust fuse values downward where appropriate.
-7. Freeze `config/io_map.json` as v1 hardware map.
-8. Implement HAL/drivers from that map.
-9. Implement each feature module as non-blocking state machines.
-10. Bench test every subsystem before vehicle wiring.
+1. Bench-verify exact Window Driver and Lock Driver physical terminal order/polarity on arrival.
+2. Bind verified H-bridge control pins into the HAL/motor driver layer.
+3. Implement Input Board RS485 driver.
+4. Freeze and implement Output Board interface/driver.
+5. Freeze Analog Board/front-end for fuel, voltage and current sensing.
+6. Add final wire gauges, colors, connector IDs and splice IDs to all schematic sheets.
+7. Continue Python modules: push start, lighting, wipers, cooling, security, fuel, diagnostics and touchscreen/API.
+8. Bench-test every subsystem before vehicle wiring.
 
 ## Safety rules
 
@@ -102,3 +96,4 @@ The software architecture rule is: feature modules use symbolic names; raw board
 - Every high-current branch is independently fused.
 - Raw automotive +12V inputs are conditioned as required before logic electronics.
 - Brake-light operation remains hardware-safe and independent of BCM software.
+- Reversible motors stop on process shutdown and include maximum-run timing.
