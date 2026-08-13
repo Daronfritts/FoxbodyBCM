@@ -5,19 +5,20 @@ Last updated: 2026-08-12
 
 ## Simple names used throughout the project
 
-Use these functional names in schematics, code comments and normal discussion. The model number stays documented for terminal references and purchasing.
+Use these functional names in schematics, code comments and normal discussion. Specific model/listing data stays documented for terminal references and purchasing.
 
 - **BCM Controller** = Raspberry Pi 4B, 8 GB.
 - **Input Board** = 24DIB32 NPN 32-channel isolated digital input / RS485 board.
 - **Output Board** = OPMSD16 PNP 16-channel 12 V MOSFET output board.
-- **Window Driver** = Cytron MDD20A dual H-bridge motor driver.
-- **Lock Driver** = Cytron MDD10A dual H-bridge motor driver.
+- **Window Driver** = selected dual high-current H-bridge, 9-30 V motor supply, 3.3/5 V control, A/B direction plus PA/PB PWM, advertised 60 A module rating.
+- **Lock Driver** = selected dual H-bridge, 3-14 V supply, 2.2-6 V logic input, 5 A continuous / 9 A peak per channel.
 - **I/O Expander** = MCP23017.
 - **LIN Adapter** = TJA1020 TTL-LIN interface.
 - **RS485 Adapter** = isolated USB-RS485/RS422 adapter.
 - **Aux MOSFET Board** = 4-channel low-side MOSFET board, approximately 5 A/channel class.
 - **Relay Board** = 8-channel 12 V relay board.
 - **Analog Board** = protected ADC/front-end hardware; exact model still to be frozen.
+- **5V Power Supply** = 12/24 V to 5 V, 10 A / 50 W DC-DC converter selected for BCM Controller and 5 V electronics.
 
 ## Hardware already owned / previously identified
 
@@ -32,30 +33,35 @@ Use these functional names in schematics, code comments and normal discussion. T
 - Relay Board (8-channel 12 V relay board).
 - Rain-sensor hardware currently on hand, but the final rain sensor may be replaced with a more automotive-suitable optical unit.
 - Miscellaneous current sensors already discussed/purchased; exact ratings must be verified before final assignment.
-- Raspberry Pi / vehicle networking hardware already used elsewhere in the project.
 
-## Newly identified missing motor-driver hardware
+## Selected reversible-motor hardware
 
-Do not buy relay pairs for the windows/locks. The correct missing hardware is:
+Do not buy relay pairs for the windows or locks.
 
-### 1 x Window Driver (Cytron MDD20A)
+### 1 x Window Driver
 
 Purpose: both power-window motors.
 
-- Dual-channel bidirectional brushed-DC motor driver.
-- One channel = driver window.
-- One channel = passenger window.
-- Gives the BCM forward/reverse control without mechanical reversing relays.
-- Use current sensing separately for obstruction/end-stop logic.
+- Dual-channel full H-bridge.
+- Motor supply: 9-30 V.
+- Advertised module current: up to 60 A; actual usable current must be bench verified and thermally validated.
+- 3.3 V and 5 V microcontrollers explicitly supported by the listing.
+- Direction control uses A/B logic per channel plus PA/PB PWM.
+- Channel 1 = driver window.
+- Channel 2 = passenger window.
+- Separate Hall current sensing remains planned for obstruction/end-stop protection.
 
-### 1 x Lock Driver (Cytron MDD10A)
+### 1 x Lock Driver
 
 Purpose: both door-lock actuators.
 
-- Dual-channel bidirectional brushed-DC motor driver.
-- One channel = driver lock actuator.
-- One channel = passenger lock actuator.
-- Independent channels preserve future per-door behavior.
+- Dual-channel full H-bridge.
+- Supply: 3-14 V.
+- Input logic range: 2.2-6 V; 3.3 V logic supported.
+- 5 A continuous, 9 A peak per channel per listing.
+- Channel 1 = driver lock actuator.
+- Channel 2 = passenger lock actuator.
+- Lock pulse is short and software timed.
 
 ## Conventional automotive relays
 
@@ -65,51 +71,34 @@ Likely relay uses after final verification:
 
 - Starter-solenoid control.
 - Main ignition or accessory isolation if required by the final fail-safe design.
-- Headlamp main/high-beam power if current or fallback strategy makes relay control preferable.
-- Rear defrost if the grid current is above the Output Board's safe verified load rating.
-- Horn if preferred for isolation/current handling.
-- Cooling-fan enable/contactors only if the final PWM/fan controller requires them.
+- Headlamp low/high beam power where final current exceeds the direct Output Board design ceiling.
+- Rear defrost.
+- Cooling-fan enable/contactors only if the final fan controller requires them.
 - Spare/emergency bypass circuits.
 
-Do not use Bosch relays as the normal reversing method for windows or door locks once the Window Driver and Lock Driver are installed.
+Windows and locks do not use reversing relay pairs.
 
 ## Output Board role
 
-Use for outputs that are within its verified voltage/current/thermal envelope, including suitable one-direction loads and control signals. Potential examples include:
+Use for one-direction loads within the verified electrical/thermal envelope. Project design ceiling is 4 A continuous per channel even though the published ceiling is just under 5 A at automotive voltage.
 
-- Puddle/courtesy lights.
-- Small exterior/interior lighting loads if verified.
+Typical direct/control uses:
+
+- Puddle/courtesy LEDs.
+- Small lighting loads after current verification.
 - Relay coils/contactors.
-- Hatch/fuel-door release if current is within limit and suppression is correct.
+- Hatch/fuel-door release if measured current and suppression allow it.
 - Indicators/auxiliary loads.
-
-Final allocation depends on measured load current and verified board specifications.
 
 ## Input Board role
 
-The Input Board is the primary discrete-input board.
+The Input Board is the primary discrete-input board. It reads door/hatch/hood switches, brake/clutch/parking-brake/reverse/run states, start/defrost/hatch/lock/window/wiper/light/hazard commands, wiper park and other on/off states.
 
-It reads:
+Factory signals that present raw +12 V must be conditioned for the exact input configuration rather than assumed safe.
 
-- Door/hatch/hood switches.
-- Brake/clutch/parking-brake/reverse/run states.
-- Push/start/defrost/hatch/lock/window/wiper/light/hazard switch commands.
-- Wiper park.
-- Other on/off vehicle states.
+## Analog / sensor interface still required
 
-Factory signals that present raw +12 V must be conditioned appropriately for the exact input configuration rather than assumed safe.
-
-## Analog / sensor interface still required in final design
-
-The BCM Controller has no native analog inputs. A protected Analog Board is required for analog values such as:
-
-- Fuel sender.
-- Battery voltage if not taken solely from another trusted source.
-- Hall-effect current sensors.
-- Oil/fuel pressure transducers if routed through BCM.
-- Any analog rain/light/current sensor selected later.
-
-The exact ADC part is not yet frozen. Do not buy a random ADC solely from an old chat recommendation; select it when the analog channel count, input ranges and protection network are finalized.
+The BCM Controller has no native analog inputs. A protected Analog Board is required for fuel level, battery voltage/current, Hall current sensors, pressure transducers and other analog sensors.
 
 ## Sensor hardware still to finalize
 
@@ -118,19 +107,12 @@ The exact ADC part is not yet frozen. Do not buy a random ADC solely from an old
 - Final rain sensor.
 - Final cabin temperature/humidity sensor.
 - Final ambient temperature sensor.
-- Ambient light sensor if BH1750 is retained.
+- Ambient light sensor if retained.
 - Exact battery-current sensor rating.
-- Exact driver/passenger window-current sensor ratings.
+- Exact window-current sensor ratings.
 - Exact fan-current sensor rating.
 - Analog Board / front-end hardware.
 
-## Purchase rule from this point forward
+## Purchase rule
 
-No new BCM hardware should be purchased simply because a generic circuit example uses it. Every new purchase must have:
-
-1. A named function in the frozen schematic.
-2. A verified voltage/current requirement.
-3. A defined interface to a board terminal.
-4. A reason the hardware already owned cannot safely perform that job.
-
-This rule is intended to stop architecture drift and unnecessary duplicate purchases.
+No new BCM hardware should be purchased simply because a generic circuit example uses it. Every purchase must have a named function, verified requirement, defined interface and a reason existing hardware cannot safely perform that job.
