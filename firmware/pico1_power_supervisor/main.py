@@ -8,22 +8,22 @@ from config import (
     SCREEN_OUTPUT,
     IGNITION_SENSE_PIN,
     IGNITION_ACTIVE_LOW,
+    SIMULATED_BATTERY_VOLTS,
+    LOW_BATTERY_VOLTS,
+    CRITICAL_BATTERY_VOLTS,
 )
 
 
 class PowerSupervisor:
     def __init__(self):
-        # Onboard LED represents the future screen-enable output on the bench.
         self.screen = Pin(SCREEN_OUTPUT, Pin.OUT)
-
-        # Tested bench input: GP2 with internal pull-up.
         self.ignition_pin = Pin(IGNITION_SENSE_PIN, Pin.IN, Pin.PULL_UP)
 
         self.ignition = False
-        self.last_ignition = None
+        self.battery_volts = SIMULATED_BATTERY_VOLTS
+        self.state = None
         self.shutdown_requested = False
 
-        # Fail-safe startup state.
         self.screen.off()
 
     def read_inputs(self):
@@ -34,20 +34,50 @@ class PowerSupervisor:
         else:
             self.ignition = raw_ignition == 1
 
-    def update_power_state(self):
-        # Only act when ignition state changes.
-        if self.ignition == self.last_ignition:
+        if BENCH_MODE:
+            self.battery_volts = SIMULATED_BATTERY_VOLTS
+
+    def determine_state(self):
+        if self.ignition:
+            return "RUNNING"
+
+        if self.battery_volts <= CRITICAL_BATTERY_VOLTS:
+            return "PI_SHUTDOWN"
+
+        if self.battery_volts <= LOW_BATTERY_VOLTS:
+            return "LOW_BATTERY"
+
+        return "PARKED"
+
+    def apply_state(self, new_state):
+        if new_state == self.state:
             return
 
-        if self.ignition:
+        self.state = new_state
+
+        if self.state == "RUNNING":
             self.screen.on()
             self.shutdown_requested = False
-            print("KEY ON -> SCREEN ON")
-        else:
+            print("STATE: RUNNING")
+            print("KEY ON -> SCREEN ON / PI ON")
+
+        elif self.state == "PARKED":
             self.screen.off()
+            self.shutdown_requested = False
+            print("STATE: PARKED")
             print("KEY OFF -> SCREEN OFF / PI REMAINS ON")
 
-        self.last_ignition = self.ignition
+        elif self.state == "LOW_BATTERY":
+            self.screen.off()
+            self.shutdown_requested = True
+            print("STATE: LOW BATTERY")
+            print("SCREEN OFF -> REQUEST PI SHUTDOWN")
+
+        elif self.state == "PI_SHUTDOWN":
+            self.screen.off()
+            self.shutdown_requested = True
+            print("STATE: PI SHUTDOWN")
+            print("CRITICAL BATTERY -> PI MUST BE OFF")
 
     def run(self):
         print("FOXBODY BCM")
@@ -55,11 +85,13 @@ class PowerSupervisor:
         print("FIRMWARE " + FIRMWARE_VERSION)
         print("BENCH HARDWARE MODE" if BENCH_MODE else "VEHICLE MODE")
         print("IGNITION INPUT: GP" + str(IGNITION_SENSE_PIN))
+        print("BATTERY: " + str(self.battery_volts) + " V (SIMULATED)")
         print("SYSTEM READY")
 
         while True:
             self.read_inputs()
-            self.update_power_state()
+            new_state = self.determine_state()
+            self.apply_state(new_state)
             sleep(0.05)
 
 
