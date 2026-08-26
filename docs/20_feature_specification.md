@@ -1,7 +1,7 @@
 # FoxbodyBCM Feature Specification
 
 Status: CURRENT DESIGN INTENT
-Last updated: 2026-08-12
+Last updated: 2026-08-25
 
 This document captures user-facing behavior that has been agreed or strongly selected during design discussions. It is intentionally separate from hardware pin assignments so behavior can survive hardware changes.
 
@@ -46,6 +46,24 @@ Normal hatch/defrost function waits about 3 seconds after the initial qualifying
 - Unauthorized start attempts are logged.
 - Security can inhibit starting but must not deliberately kill a running engine.
 - Main-battery disconnect while armed should be logged and handled when backup power is implemented.
+
+## Radar-assisted adaptive cruise
+
+- Driver interface is the factory Fox cruise steering wheel/buttons.
+- Steering-wheel button states are read by a Pico 2 W in the wheel and transmitted wirelessly to the BCM/receiver.
+- Normal cruise remains cable-throttle cruise using a purpose-built electronic cruise actuator; the BCM does not replace the accelerator pedal linkage with drive-by-wire.
+- The adaptive function is throttle-only. It may reduce cruise throttle, fully release throttle command or cancel cruise, but it will not apply the hydraulic brakes.
+- Forward target sensing uses an OEM automotive radar over CAN. Current preferred research target is Toyota/Denso 88210-07010 or a verified protocol-compatible Denso unit.
+- User-selectable following distance may be Short / Medium / Long.
+- When a valid lead vehicle is detected, the system compares following distance and closing speed against the selected gap and progressively reduces cruise throttle when needed.
+- When the lane clears or adequate distance returns, the system may smoothly restore throttle toward the driver's set speed.
+- If releasing throttle is insufficient to preserve a safe margin, adaptive cruise cancels and produces an immediate visual/audible BRAKE or TAKE OVER warning.
+- Brake pedal and clutch pedal always cancel cruise through a hardwired fail-safe path wherever practical; this cancellation must not depend solely on Linux, wireless communication or a single software process.
+- Loss of radar, stale target data, wireless timeout, invalid vehicle-speed data, actuator/controller fault or BCM fault must fail toward less throttle/cancelled cruise.
+- Loss of steering-wheel wireless control may never leave cruise latched in an accelerating state.
+- The throttle return spring remains the mechanical default. A de-energized/released cruise actuator must not be capable of holding the throttle open.
+- Adaptive cruise will be commissioned in phases: radar display/logging only, warning-only mode, automatic cruise cancel, then limited proportional throttle reduction after validation.
+- No automatic braking is planned for this implementation.
 
 ## Windows
 
@@ -126,6 +144,7 @@ Normal hatch/defrost function waits about 3 seconds after the initial qualifying
 - Boot self-test checks communication, storage and major I/O/sensor subsystems.
 - Service/Test mode can command outputs manually while parked with safety interlocks.
 - Service/Test examples: horn, puddle lights, locks, windows, wipers, fans and exterior lighting.
+- Adaptive-cruise diagnostics should expose raw/decoded radar status, lead-target range, relative velocity, target age, set speed, wheel-control link status, cancellation reason and actuator command.
 
 ## Fail-safe philosophy
 
@@ -134,6 +153,7 @@ Normal hatch/defrost function waits about 3 seconds after the initial qualifying
 - Opposite H-bridge directions are mutually exclusive.
 - Critical road-safety functions should have a defined safe fallback where practical.
 - Fancy convenience features may fail disabled rather than adding dangerous complexity.
+- Cruise/adaptive-cruise faults fail toward throttle release and cruise cancellation.
 - Keep the last two known-good software/settings backups.
 
 ## User interface
@@ -150,6 +170,8 @@ Primary display plan:
 - Settings
 
 Critical warnings can interrupt any page. Speed/RPM/turn/high-beam/critical status should remain visible in a compact region when practical.
+
+Adaptive-cruise UI may show set speed, detected lead vehicle, following-distance setting, range/closing state and takeover warning.
 
 The small extra touchscreen is reserve hardware. The BCM API must permit moving controls to it later without changing underlying vehicle logic.
 
