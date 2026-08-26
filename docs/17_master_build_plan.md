@@ -1,7 +1,7 @@
 # FoxbodyBCM Master Build Plan
 
 Status: ACTIVE DESIGN BASELINE
-Last consolidated: 2026-08-12
+Last consolidated: 2026-08-25
 
 This file is the high-level source of truth for the FoxbodyBCM project. It exists so the design does not depend on chat history.
 
@@ -77,6 +77,23 @@ Normal defrost and hatch operation are delayed approximately 3 seconds after the
 - Event history records triggers and failed authorization attempts.
 - Backup power/emergency access remains a design item.
 
+### Radar-assisted adaptive cruise
+
+- Goal is throttle-only adaptive cruise, not automated braking.
+- Factory Fox cruise-control steering wheel and buttons remain the driver interface.
+- A Pico 2 W mounted in the steering wheel reads the factory cruise buttons and sends commands wirelessly to a receiver/BCM node.
+- Normal cruise uses a purpose-built cable-operated electronic cruise actuator on the existing mechanical throttle body. The accelerator pedal remains mechanically connected.
+- Forward ranging is planned around an OEM 77 GHz automotive radar. Current research favorite is the Toyota/Denso 88210-07010 family because standalone CAN wake-up/track decoding has already been demonstrated in open-source projects.
+- Radar data of interest: target validity, range/distance, relative velocity/closing speed and target/lane confidence where available.
+- BCM logic may reduce commanded cruise throttle or fully release/cancel cruise when a slower vehicle is detected.
+- The system will not command the hydraulic brakes. If throttle release cannot maintain a safe following margin, cruise cancels and the driver receives an immediate BRAKE/TAKE OVER warning.
+- Brake and clutch cancellation must remain hardwired fail-safe inputs to the cruise actuator/controller wherever practical. They must not depend solely on Linux, wireless communication or a single Pico.
+- Loss of radar, invalid CAN data, wireless control timeout, controller fault or stale target data must fail toward less throttle and cancel adaptive cruise.
+- Cruise actuator failure behavior must be mechanically fail-safe: de-energized/released actuator cannot hold the throttle open against the normal return spring.
+- Following-distance presets may be exposed on the touchscreen as Short / Medium / Long after radar validation.
+- Development must be staged: (1) read/display radar targets only, (2) warnings only, (3) cruise cancel on unsafe closure, (4) limited proportional throttle reduction, (5) final road validation.
+- Do not copy third-party radar code blindly into production. Port only understood portions, preserve licensing notices, and validate CAN IDs/scaling on the exact radar hardware before any throttle authority is enabled.
+
 ### Windows
 
 - MDD20A provides bidirectional control of both power-window motors.
@@ -146,6 +163,7 @@ Normal defrost and hatch operation are delayed approximately 3 seconds after the
 - The smaller touchscreen already owned is reserve hardware if the main-screen controls prove inconvenient.
 - BCM API/state model must stay display-independent so controls can be moved later without rewriting vehicle logic.
 - Expected pages: Dash, Vehicle, BCM Controls, TPMS, Weather/Traffic, Diagnostics, Service/Test, Settings.
+- Adaptive-cruise status should show set speed, radar target/range, following-distance selection, throttle-reduction state and takeover warnings.
 - Critical speed/RPM/warnings should remain available even when another page is open.
 
 ## Sensors / data
@@ -165,6 +183,7 @@ Required or planned physical sensors include:
 - BCM enclosure/electronics temperature.
 - IMU for impact/tilt/tow detection.
 - TPMS receiver + four wheel sensors.
+- Forward automotive radar for throttle-only adaptive-cruise ranging.
 
 MicroSquirt supplies engine data including RPM, coolant, IAT, TPS, MAP, AFR, ignition data, injector pulse/duty, engine runtime and ECU battery voltage.
 
@@ -186,11 +205,12 @@ Target module organization:
 - modules/interior_lights.py
 - modules/cooling.py
 - modules/security.py
+- modules/adaptive_cruise.py
 - modules/bluetooth.py
 - modules/diagnostics.py
 - modules/touchscreen.py
 - modules/horn.py
-- sensor/ADC/current/TPMS/IMU drivers as hardware is finalized
+- sensor/ADC/current/TPMS/IMU/radar drivers as hardware is finalized
 
 ## Current next steps
 
@@ -202,6 +222,7 @@ Target module organization:
 6. Implement state machines module by module.
 7. Bench-test each circuit before vehicle installation.
 8. Commission the vehicle one subsystem at a time.
+9. Build normal cruise before enabling radar-based throttle authority; radar starts as read-only diagnostics/warnings.
 
 ## Important warning
 
