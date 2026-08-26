@@ -11,6 +11,7 @@ Main planned features include:
 - Push-button start and retained accessory power.
 - Bluetooth phone authorization / proximity locking.
 - Alarm and security logic.
+- Throttle-only radar-assisted adaptive cruise using a factory Fox cruise wheel, wireless Pico 2 W controls, OEM forward radar and a cable-operated cruise actuator. The system may reduce/release throttle but will not command the brakes.
 - Power-window automation with rain/hot-car behavior and current sensing.
 - Automatic door locks.
 - Automatic headlights, high beams, turn/hazard logic and puddle lights.
@@ -46,6 +47,7 @@ Windows and locks are not intended to use four-relay-per-door reversing arrangem
 - `docs/21_io_assignment_plan.md` - provisional X/Y/H-bridge assignment map.
 - `docs/22_wiring_schematic_spec.md` - rules for the final wire-the-car-from-it schematics.
 - `docs/23_software_architecture_plan.md` - software/HAL/state-machine design.
+- `docs/24_adaptive_cruise.md` - throttle-only radar-assisted cruise architecture and research references.
 - `config/io_map.json` - machine-readable provisional symbolic I/O map.
 - `docs/schematics/` - editable SVG schematic source.
 
