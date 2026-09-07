@@ -10,6 +10,7 @@ This file is the high-level source of truth for the FoxbodyBCM project. It exist
 - 1988 Ford Mustang Fox Body LX hatchback, 5-speed manual.
 - Factory gauge cluster is being removed and replaced by the FoxbodyDash display.
 - MicroSquirt handles engine management. The BCM must not become a single point of failure that can intentionally shut off an already-running engine.
+- Exhaust currently uses SpinTech Pro 9000 mufflers.
 
 ## Core architecture
 
