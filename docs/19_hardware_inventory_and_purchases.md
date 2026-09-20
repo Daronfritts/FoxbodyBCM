@@ -1,7 +1,11 @@
 # FoxbodyBCM Hardware Inventory and Purchase Plan
 
 Status: CONSOLIDATED BASELINE
-Last updated: 2026-08-12
+Last updated: 2026-09-20
+
+## Related hardware reference docs
+
+- `docs/25_hardware_photo_index.md` = physical board/photo identification index with board labels such as `IN-01`, `OUT-01`, `RLY-01`, `DRV-01`, `DRV-02`, `LIN-01`, `PICO-01`, and `PICO-02`.
 
 ## Simple names used throughout the project
 
