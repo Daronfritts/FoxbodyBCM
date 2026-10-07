@@ -11,8 +11,8 @@ These are the fuse values currently shown on the schematic set. They are design 
 | F01 | BCM Controller / Pi DC-DC | 5A |
 | F02 | Input Board / 24DIB32 | 3A |
 | F03 | Output Board control / OPMSD16 | 5A |
-| F04 | Window Driver / MDD20A | 40A |
-| F05 | Lock Driver / MDD10A | 20A |
+| F04 | Selected Window Driver | 40A |
+| F05 | Selected Lock Driver | 20A |
 | F06 | Headlights low beam | 20A |
 | F07 | High beams | 20A |
 | F08 | Parking / marker lights | 15A |

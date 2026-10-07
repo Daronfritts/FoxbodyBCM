@@ -1,7 +1,7 @@
 # FoxbodyBCM I/O Assignment Plan
 
 Status: PROVISIONAL BASELINE - MUST BE VERIFIED AGAINST FINAL BOARD TERMINALS BEFORE VEHICLE WIRING
-Last updated: 2026-08-12
+Last updated: 2026-10-07
 
 This file is the working map that software and schematics will converge on. It is intentionally explicit so the project does not depend on chat history.
 
@@ -18,7 +18,7 @@ This file is the working map that software and schematics will converge on. It i
 | X06 | Parking brake | Factory parking-brake switch |
 | X07 | Reverse state | Factory reverse-light circuit through protected interface |
 | X08 | Start/defrost button command | Repurposed defrost/start switch logic |
-| X09 | Rear defrost command | Same physical button after intent handling / dedicated contact if available |
+| X09 | Rear defrost command | Separate verified physical contact only if available; otherwise defrost intent is handled from X08 |
 | X10 | Glove-box hatch button | Hatch / emergency override sequence |
 | X11 | Door lock command | Lock switch |
 | X12 | Door unlock command | Unlock switch |
@@ -70,26 +70,26 @@ The final OPMSD16 map must be verified against the exact board output polarity a
 
 | Output | Intended function | Load strategy |
 |---|---|---|
-| Y01 | Parking/running lamps | Direct only if verified within rating; otherwise relay/driver coil |
-| Y02 | Headlamp enable | Relay/driver control likely |
-| Y03 | High beam enable | Relay/driver control likely |
-| Y04 | Left turn output | Direct/driver depending lamp load |
-| Y05 | Right turn output | Direct/driver depending lamp load |
-| Y06 | Horn | Relay/driver control likely |
-| Y07 | Rear defrost | Relay/contactor control likely because grid current is high |
-| Y08 | Hatch release | Direct only if solenoid current/transient is within rating, otherwise relay/driver |
-| Y09 | Fuel-door release | Direct only if actuator current is within rating, otherwise relay/driver |
-| Y10 | Driver-lock H-bridge command A / spare control | Logic/control only |
-| Y11 | Driver-lock H-bridge command B / spare control | Logic/control only |
-| Y12 | Passenger-lock H-bridge command A / spare control | Logic/control only |
-| Y13 | Passenger-lock H-bridge command B / spare control | Logic/control only |
-| Y14 | Wiper low control | Relay/driver/control stage |
-| Y15 | Wiper high control | Relay/driver/control stage |
-| Y16 | Washer pump | Direct if verified or relay/driver control |
+| Y01 | Parking / marker lamps | Direct only after ≤4A continuous / inrush / thermal verification; otherwise dedicated driver |
+| Y02 | Puddle LEDs | Direct only after ≤4A continuous / inrush / thermal verification; otherwise dedicated driver |
+| Y03 | Courtesy / interior LEDs | Direct only after ≤4A continuous / inrush / thermal verification; otherwise dedicated driver |
+| Y04 | Left turn output | Direct only after ≤4A continuous / inrush / thermal verification; otherwise dedicated driver |
+| Y05 | Right turn output | Direct only after ≤4A continuous / inrush / thermal verification; otherwise dedicated driver |
+| Y06 | Horn relay coil | Relay/driver coil only |
+| Y07 | Spare; defrost moved to mechanical RLY-04 | Unassigned |
+| Y08 | Hatch release | Direct only after ≤4A continuous / inrush / thermal verification; otherwise dedicated driver |
+| Y09 | Fuel-door release | Direct only after ≤4A continuous / inrush / thermal verification; otherwise dedicated driver |
+| Y10 | Headlamp low-beam relay coil | Relay/driver coil only |
+| Y11 | High-beam relay coil | Relay/driver coil only |
+| Y12 | Wiper LOW control | Relay/driver coil only |
+| Y13 | Wiper HIGH control | Relay/driver coil only |
+| Y14 | Washer pump / relay | Direct only after ≤4A continuous / inrush / thermal verification; otherwise dedicated driver |
+| Y15 | Spare; START moved to mechanical RLY-03 | Unassigned |
+| Y16 | Spare / future | Unassigned |
 
-The Cytron motor drivers may be better controlled from MCP23017/Pi-safe logic outputs instead of consuming OPMSD16 power channels. That will be frozen after logic-level compatibility is verified.
+This table now matches the redrawn SVG baseline and supersedes the older conflicting Y-channel table. Selected window/lock drivers use Pi-safe logic control, not OPMSD16 12V outputs. Their exact GPIO/interface terminals remain to be verified.
 
-## Cytron MDD20A - window motor assignment
+## Selected dual high-current H-bridge - window motor assignment
 
 - Channel 1 motor terminals -> Driver window motor two wires.
 - Channel 1 direction/control inputs -> BCM logic outputs DR_WIN_A / DR_WIN_B.
@@ -99,7 +99,7 @@ The Cytron motor drivers may be better controlled from MCP23017/Pi-safe logic ou
 - Ground -> dedicated high-current ground to BCM/body ground architecture.
 - Never command both direction states in an invalid combination.
 
-## Cytron MDD10A - door lock assignment
+## Selected dual H-bridge - door lock assignment
 
 - Channel 1 motor terminals -> Driver door lock actuator.
 - Channel 1 control -> DR_LOCK_A / DR_LOCK_B.

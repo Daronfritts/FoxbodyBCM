@@ -1,7 +1,7 @@
 # FoxbodyBCM Wiring / Schematic Specification
 
 Status: DESIGN SOURCE OF TRUTH
-Last updated: 2026-08-12
+Last updated: 2026-10-07
 
 This document defines how the final wire-the-car-from-it schematic must be drawn and what it must contain.
 
@@ -12,8 +12,8 @@ Use a simple functional name first. Put the actual model number in smaller text 
 - **BCM Controller** = Raspberry Pi 4B.
 - **Input Board** = 24DIB32 NPN 32-channel RS485 digital input board.
 - **Output Board** = OPMSD16 PNP 16-channel 12 V MOSFET output board.
-- **Window Driver** = Cytron MDD20A dual H-bridge.
-- **Lock Driver** = Cytron MDD10A dual H-bridge.
+- **Window Driver** = selected dual high-current H-bridge (9–30V; A/B plus PA/PB PWM), exact terminals to verify.
+- **Lock Driver** = selected dual H-bridge (3–14V; 5A continuous/9A peak per channel), exact terminals to verify.
 - **I/O Expander** = MCP23017.
 - **Aux MOSFET Board** = 4-channel low-side MOSFET board.
 - **Relay Board** = 8-channel 12 V relay board.
@@ -25,7 +25,9 @@ These simple names should also be used in code comments, wire labels and documen
 
 ## Required schematic format
 
-The final schematic must be a real line schematic, not a block diagram and not ASCII.
+Use the rectangular-device line-drawing style from the push-start reference: label each device box and print the terminal number/name immediately beside each incoming or outgoing wire. Keep load-current paths separate from logic and relay-coil paths. Use solid dots only for intentional junctions; crossings without dots are unconnected. Repeated device boxes are references to the same device.
+
+All ten existing SVGs were redrawn in this style on 2026-10-07. The reproducible source is `tools/redraw_schematics.py`. Unverified connector/pin, gauge and harness-color details must be marked TBD rather than assigned invented values.
 
 Every circuit sheet must show:
 
@@ -62,7 +64,7 @@ Actual vehicle wire colors will be assigned separately and printed beside each c
 
 These are now the working fuse values for the schematics. They are not permission to exceed the ampacity of the final wire. If measured load current or final wire size requires a change, the schematic and this table must be changed together.
 
-- **F00 BCM MAIN - 80 A**: feeds BCM electronics/body-power distribution only. Cooling fans, starter high-current path and any other very high-current branches use separate battery feeds and protection.
+- **F00 BCM MAIN - 125 A**: feeds BCM electronics/body-power distribution only. Cooling fans, starter high-current path and any other very high-current branches use separate battery feeds and protection.
 - **F01 BCM CONTROLLER - 5 A**: 12 V side of the DC/DC converter feeding the BCM Controller.
 - **F02 INPUT BOARD - 3 A**: Input Board power.
 - **F03 OUTPUT CONTROL - 5 A**: Output Board/control electronics only. High-current loads controlled by the Output Board receive their own branch fuses.
@@ -139,6 +141,16 @@ No four-relay-per-door arrangement.
 - Headlights/high beams may use conventional relays if they are retained as high-current/fail-safe stages.
 - Puddle/courtesy LEDs are preferred direct MOSFET loads if current is safely within rating.
 - Turn/hazard logic is software controlled with a final power stage selected according to actual lamp current.
+
+## Mechanical relay contact assignments
+
+- Channel 1 NO → Bosch ACC 86.
+- Channel 2 NO → Bosch RUN/IGN 86.
+- Channel 3 NO → Bosch START 86.
+- Channel 4 NO → Bosch rear-defrost 86.
+- Each used COM receives fused +12V for coil control; board NC contacts are unused.
+- Bosch 85 → ground; separately fused vehicle feed → 30; 87 → vehicle load. 87a unused/insulated where present.
+- Relay-board GPIO trigger compatibility, coil-feed protection and actual board terminal layout must be verified.
 
 ## Starter / ignition / accessory
 
