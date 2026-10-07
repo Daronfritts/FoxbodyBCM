@@ -49,6 +49,21 @@ This file is the working map that software and schematics will converge on. It i
 - Grounds and commons must follow the exact board version installed in the car.
 - Switch wiring should be low-current command wiring only once intercepted by BCM.
 
+## 8-channel mechanical relay board assignments
+
+The 8-channel 12 V mechanical relay board is the BCM's low-current relay-control stage for selected automotive Bosch relays and other circuits where relay isolation is appropriate.
+
+| Relay output | Assigned function | Downstream strategy |
+|---|---|---|
+| RLY-01 | ACC | Commands Bosch ACC relay coil; Bosch relay carries vehicle accessory load |
+| RLY-02 | RUN / IGN | Commands Bosch RUN/IGN relay coil; Bosch relay carries vehicle ignition/run load |
+| RLY-03 | START | Commands Bosch START relay coil; Bosch relay carries starter-control/solenoid branch and remains subject to BCM start interlocks |
+| RLY-04 | Spare | Unassigned |
+| RLY-05 | Spare | Unassigned |
+| RLY-06 | Spare | Unassigned |
+| RLY-07 | Spare | Unassigned |
+| RLY-08 | Spare | Unassigned |
+
 ## OPMSD16 output assignment concept
 
 The final OPMSD16 map must be verified against the exact board output polarity and current rating. The following is the intended logical allocation, not permission to connect a high-current motor directly.
