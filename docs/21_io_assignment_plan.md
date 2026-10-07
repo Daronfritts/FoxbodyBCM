@@ -58,7 +58,7 @@ The 8-channel 12 V mechanical relay board is the BCM's low-current relay-control
 | RLY-01 | ACC | Commands Bosch ACC relay coil; Bosch relay carries vehicle accessory load |
 | RLY-02 | RUN / IGN | Commands Bosch RUN/IGN relay coil; Bosch relay carries vehicle ignition/run load |
 | RLY-03 | START | Commands Bosch START relay coil; Bosch relay carries starter-control/solenoid branch and remains subject to BCM start interlocks |
-| RLY-04 | Spare | Unassigned |
+| RLY-04 | Rear defrost | Commands dedicated Bosch/high-current rear-defrost relay; downstream relay carries the separately fused rear-window grid load |
 | RLY-05 | Spare | Unassigned |
 | RLY-06 | Spare | Unassigned |
 | RLY-07 | Spare | Unassigned |
