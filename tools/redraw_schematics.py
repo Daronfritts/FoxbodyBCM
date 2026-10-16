@@ -7,7 +7,7 @@ import textwrap
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'docs/schematics'
 C = {'power':'#c62828','switched':'#d66700','ground':'#202020','signal':'#1565c0','motor':'#26803c','analog':'#7b3294','bus':'#616161'}
-INPUTS = ['Driver door ajar','Passenger door ajar','Hatch ajar','Hood open','Brake state (interface)','Clutch pedal','Parking brake','Reverse state (interface)','Start / defrost button','Defrost intent / separate contact','Glove-box hatch button','Lock command','Unlock command','Driver window UP','Driver window DOWN','Passenger window UP','Passenger window DOWN','Wiper mist','Wiper intermittent','Wiper low','Wiper high','Washer request','Headlight request','High beam request','Left turn request','Right turn request','Hazard request','RUN sense (interface)','Wiper park (interface)','Fuel-door request','Spare','Spare']
+INPUTS = ['Driver door ajar','Passenger door ajar','Hatch ajar','Hood open','Brake state (interface)','Clutch pedal','Parking brake','Reverse state (interface)','Start / defrost button','Fuel-door request','Glove-box hatch button','Lock command','Unlock command','Driver window UP','Driver window DOWN','Passenger window UP','Passenger window DOWN','Wiper mist','Wiper intermittent','Wiper low','Wiper high','Washer request','Headlight request','High beam request','Left turn request','Right turn request','Hazard request','RUN sense (interface)','Wiper park (interface)','Spare','Spare','Spare']
 OUTPUTS = ['Park / marker','Puddle LEDs','Courtesy LEDs','Left turn','Right turn','Horn relay coil','Spare (defrost moved to RLY-04)','Hatch release','Fuel-door release','Low-beam relay coil','High-beam relay coil','Wiper LOW control','Wiper HIGH control','Washer pump / relay','Spare (START moved to RLY-03)','Spare']
 
 class Sheet:
@@ -60,7 +60,7 @@ def row(a,b,label='',kind='signal'): return (a,b,label,kind)
 def power(s,title,fuse,amp,device,terminal='VIN (verify)'):
  s.bundle(title,'BCM fused distribution',device,[row(f'{fuse} OUT',terminal,f'{fuse} {amp}A • +12V','power'),row('CHASSIS GND','GND (verify)','Ground return','ground')],f'{fuse} fuse sits upstream of this conductor; gauge/color TBD. Verify device terminal order.')
 def switches(s,title,labels):
- s.bundle(title,'Intercepted switches / interface','Input Board IN-01 (24DIB32)',[row('Contact / sink (pin TBD)' if i < 30 else 'No connection',f'X{i:02}',label,'signal' if i < 30 else 'unused') for i,label in labels]+[row('Switch common (pin TBD)','GND / input return (verify)','Low-current ground-switch return','ground')],'Factory +12V sources use a protected sinking interface. X labels are input channel numbers, not factory connector pin numbers.')
+ s.bundle(title,'Intercepted switches / interface','Input Board IN-01 (24DIB32)',[row('Contact / sink (pin TBD)' if i not in (29,30,31) else 'No connection',f'X{i:02}',label,'signal' if i not in (29,30,31) else 'unused') for i,label in labels]+[row('Switch common (pin TBD)','GND / input return (verify)','Low-current ground-switch return','ground')],'Factory +12V sources use a protected sinking interface. X labels are input channel numbers, not factory connector pin numbers.')
 def relay(s,title,fuse,amp,control,term,load):
  y=s.y; s.text(40,y,title,22,True)
  s.rect(60,y+35,420,125); s.text(270,y+67,'FUSED DISTRIBUTION',19,True,'middle')
@@ -106,7 +106,7 @@ for start in (0,8,16,24): switches(s,f'Input channels X{start:02}–X{start+7:02
 s.bundle('RS485 conductors','Input Board IN-01','Isolated USB-RS485 Adapter',[row('A+ (verify)','A / D+ (verify)','RS485 twisted pair A','bus'),row('B- (verify)','B / D- (verify)','RS485 twisted pair B','bus')],'Isolated adapter bus-reference/shield connection follows its specific manual; do not bridge isolation by guessing a ground connection.')
 s.bundle('Protected +12V input example','Factory brake / reverse / RUN','Protected input interface (TBD)',[row('Signal +12V (pin TBD)','12V IN','Factory signal • never direct to Pi','signal'),row('Factory GND','GND / return (TBD)','Interface return','ground')])
 s.bundle('Conditioned input example','Protected input interface (TBD)','Input Board IN-01',[row('SINK OUT','X04 / X07 / X27','Choose the matching assigned channel','signal')])
-s.notes(['The repurposed defrost/start button uses X08. X09 is a separate contact/input only if physically present; software intent handling does not create a second wire.','X30/X31 are unassigned: shown in the map, leave unwired. Verify ground-switch behavior on every factory switch. Preserve independent brake-light operation.']); s.save()
+s.notes(['The repurposed defrost/start button uses X08. X09 is the fuel-door button; rear-defrost intent is handled from X08.','X29/X30/X31 are unassigned: shown in the map, leave unwired. Verify ground-switch behavior on every factory switch. Preserve independent brake-light operation.']); s.save()
 
 s=Sheet('03_output_board.svg','OUTPUT / RELAY BOARD','Mechanical relay contacts command Bosch coils; MOSFET board controls the remaining planned loads.')
 power(s,'Output-board electronics','F03',5,'Output Board OUT-01')
@@ -137,7 +137,7 @@ for args in [('LOW-BEAM RELAY','F06',20,'Output Board OUT-01','Y10','LH / RH low
 for args in [('Park / marker','F08',15,'Y01','Park / marker lamps'),('Left turn','F09',15,'Y04','Left turn lamps'),('Right turn','F09',15,'Y05','Right turn lamps'),('Puddle','F12',5,'Y02','Puddle LEDs'),('Courtesy','F13',10,'Y03','Interior / courtesy LEDs')]: direct(s,*args)
 s.bundle('Rear-defrost coil-control source','Fused +12V coil supply (TBD)','Mechanical Relay Board',[row('+12V','COM4','Coil-only feed; NC4 unused','power')])
 switches(s,'Lighting commands',[(i,INPUTS[i]) for i in range(22,27)])
-s.notes(['F09 is shared by left/right turn branches, not two separate added fuses. Feed bank arrangement and lamp currents remain TBD.','Start/defrost intent comes from X08, or X09 only if a separate verified contact exists. Rear grid current passes through F11 and Bosch 30/87, never the board relay contacts.','Brake lamps remain independent of BCM. Verify factory rear brake/turn arrangement and interception before installing these provisional turn outputs.','Courtesy dimming requires a PWM-capable verified power stage. Relay coils need correctly oriented suppression (86 positive, 85 ground where diode suppressed).']); s.save()
+s.notes(['F09 is shared by left/right turn branches, not two separate added fuses. Feed bank arrangement and lamp currents remain TBD.','Start/defrost intent comes from X08. X09 is the fuel-door button. Rear grid current passes through F11 and Bosch 30/87, never the board relay contacts.','Brake lamps remain independent of BCM. Verify factory rear brake/turn arrangement and interception before installing these provisional turn outputs.','Courtesy dimming requires a PWM-capable verified power stage. Relay coils need correctly oriented suppression (86 positive, 85 ground where diode suppressed).']); s.save()
 
 s=Sheet('07_wipers_washer_hatch.svg','WIPERS / WASHER / RELEASES','Wiper controller topology stays provisional until the Ford park circuit is verified.')
 power(s,'Wiper motor power','F14',25,'Wiper power stage (TBD)')
@@ -146,7 +146,7 @@ s.bundle('Wiper motor harness','Wiper power stage (TBD)','Factory wiper motor',[
 s.bundle('Wiper park feedback','Factory wiper motor','Protected park interface (TBD)',[row('PARK sense (pin TBD)','IN (TBD)','Verify contact polarity / voltage','signal')])
 s.bundle('Conditioned park feedback','Protected park interface (TBD)','Input Board IN-01',[row('SINK OUT','X28','Wiper park input','signal')])
 for args in [('Washer','F15',10,'Y14','Washer pump'),('Hatch','F16',15,'Y08','Hatch-release solenoid'),('Fuel door','F17',10,'Y09','Fuel-door actuator')]: direct(s,*args)
-switches(s,'Driver commands',[(i,INPUTS[i]) for i in [17,18,19,20,21,10,29]])
+switches(s,'Driver commands',[(i,INPUTS[i]) for i in [17,18,19,20,21,10,9]])
 s.notes(['Motor/solenoid inrush and flyback may require dedicated relays/drivers even below the nominal 4A direct limit. Exact downstream terminals remain TBD.','Washer behavior is software controlled; see feature specification for passes, delay and courtesy wipe. Final park wiring needs the 1988 EVTM/verified motor harness.']); s.save()
 
 s=Sheet('08_start_ignition_accessory.svg','PUSH START / ACC / RUN / START','Reference-style layout: mechanical board NO outputs → Bosch 86; 85 → ground; fused feed → 30; 87 → vehicle.')
