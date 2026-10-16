@@ -16,12 +16,12 @@ from motor_manager import motors, MotorDirection
 DIGITAL_INPUTS = (
     "driver_door", "passenger_door", "hatch_ajar", "hood_open",
     "brake", "clutch", "parking_brake", "reverse", "start_button",
-    "defrost_button", "hatch_button", "lock_button", "unlock_button",
+    "fuel_door_button", "hatch_button", "lock_button", "unlock_button",
     "driver_window_up", "driver_window_down", "passenger_window_up",
     "passenger_window_down", "wiper_mist", "wiper_intermittent",
     "wiper_low", "wiper_high", "washer", "headlight_switch",
     "high_beam_switch", "left_turn", "right_turn", "hazard",
-    "ignition_run_sense", "wiper_park", "fuel_door_button",
+    "ignition_run_sense", "wiper_park", "spare_29",
     "spare_30", "spare_31",
 )
 
