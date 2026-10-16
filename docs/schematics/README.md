@@ -58,5 +58,5 @@ Older Cytron and relay-heavy window/lock drawings are superseded. Windows and lo
 
 - A labelled circle at a device boundary is a wire terminal. Solid junction dots connect branched feeds. Wire crossings without a solid dot do not connect; white gaps keep crossing paths distinct.
 - A grouped label such as X1–X16 means multiple separate conductors, not one wire shorting channels together.
-- X08 is the repurposed defrost/start button. X09 needs a separate physical contact if used; software intent handling is not a second wire.
+- X08 is the repurposed defrost/start button. X09 is the fuel-door button; X29 is spare. Rear-defrost intent is handled from X08.
 - Analog channels, fan controller terminals and Ford wiper park circuitry remain unresolved. Their functional labels are not a verified installation pinout.
