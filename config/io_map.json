@@ -9,7 +9,7 @@
     "parking_brake": "X06",
     "reverse": "X07",
     "start_button": "X08",
-    "defrost_button": "X09",
+    "fuel_door_button": "X09",
     "hatch_button": "X10",
     "lock_button": "X11",
     "unlock_button": "X12",
@@ -29,7 +29,7 @@
     "hazard": "X26",
     "ignition_run_sense": "X27",
     "wiper_park": "X28",
-    "fuel_door_button": "X29",
+    "spare_29": "X29",
     "spare_30": "X30",
     "spare_31": "X31"
   },
