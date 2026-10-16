@@ -1,7 +1,7 @@
 # FoxbodyBCM I/O Assignment Plan
 
 Status: PROVISIONAL BASELINE - MUST BE VERIFIED AGAINST FINAL BOARD TERMINALS BEFORE VEHICLE WIRING
-Last updated: 2026-10-07
+Last updated: 2026-10-15
 
 This file is the working map that software and schematics will converge on. It is intentionally explicit so the project does not depend on chat history.
 
@@ -18,7 +18,7 @@ This file is the working map that software and schematics will converge on. It i
 | X06 | Parking brake | Factory parking-brake switch |
 | X07 | Reverse state | Factory reverse-light circuit through protected interface |
 | X08 | Start/defrost button command | Repurposed defrost/start switch logic |
-| X09 | Rear defrost command | Separate verified physical contact only if available; otherwise defrost intent is handled from X08 |
+| X09 | Fuel-door command | Optional fuel-door button / assigned convenience input |
 | X10 | Glove-box hatch button | Hatch / emergency override sequence |
 | X11 | Door lock command | Lock switch |
 | X12 | Door unlock command | Unlock switch |
@@ -38,7 +38,7 @@ This file is the working map that software and schematics will converge on. It i
 | X26 | Hazard request | Hazard switch |
 | X27 | Ignition/run sense | Vehicle power-state feedback through protected interface |
 | X28 | Wiper park | Wiper motor park contact through appropriate interface |
-| X29 | Fuel-door command | Optional fuel-door button / assigned convenience input |
+| X29 | Spare | Reserved |
 | X30 | Spare | Reserved |
 | X31 | Spare | Reserved |
 
