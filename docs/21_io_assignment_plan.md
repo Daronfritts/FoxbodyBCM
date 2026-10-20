@@ -1,7 +1,7 @@
 # FoxbodyBCM I/O Assignment Plan
 
 Status: PROVISIONAL BASELINE - MUST BE VERIFIED AGAINST FINAL BOARD TERMINALS BEFORE VEHICLE WIRING
-Last updated: 2026-10-15
+Last updated: 2026-10-19
 
 This file is the working map that software and schematics will converge on. It is intentionally explicit so the project does not depend on chat history.
 
@@ -64,30 +64,36 @@ The 8-channel 12 V mechanical relay board is the BCM's low-current relay-control
 | RLY-07 | Spare | Unassigned |
 | RLY-08 | Spare | Unassigned |
 
-## OPMSD16 output assignment concept
+## Output Board assignments — approved drawing plan, 2026-10-19
 
-The final OPMSD16 map must be verified against the exact board output polarity and current rating. The following is the intended logical allocation, not permission to connect a high-current motor directly.
+This allocation matches `config/io_map.json` and supersedes earlier conflicting output tables and Y-channel labels in existing SVGs. It is a wiring plan, not completed firmware or an installation release. Existing schematic artwork/generator and runtime bindings still need reconciliation before use.
 
 | Output | Intended function | Load strategy |
 |---|---|---|
-| Y01 | Parking / marker lamps | Direct only after ≤4A continuous / inrush / thermal verification; otherwise dedicated driver |
-| Y02 | Puddle LEDs | Direct only after ≤4A continuous / inrush / thermal verification; otherwise dedicated driver |
-| Y03 | Courtesy / interior LEDs | Direct only after ≤4A continuous / inrush / thermal verification; otherwise dedicated driver |
-| Y04 | Left turn output | Direct only after ≤4A continuous / inrush / thermal verification; otherwise dedicated driver |
-| Y05 | Right turn output | Direct only after ≤4A continuous / inrush / thermal verification; otherwise dedicated driver |
-| Y06 | Horn relay coil | Relay/driver coil only |
-| Y07 | Spare; defrost moved to mechanical RLY-04 | Unassigned |
-| Y08 | Hatch release | Direct only after ≤4A continuous / inrush / thermal verification; otherwise dedicated driver |
-| Y09 | Fuel-door release | Direct only after ≤4A continuous / inrush / thermal verification; otherwise dedicated driver |
-| Y10 | Headlamp low-beam relay coil | Relay/driver coil only |
-| Y11 | High-beam relay coil | Relay/driver coil only |
-| Y12 | Wiper LOW control | Relay/driver coil only |
-| Y13 | Wiper HIGH control | Relay/driver coil only |
-| Y14 | Washer pump / relay | Direct only after ≤4A continuous / inrush / thermal verification; otherwise dedicated driver |
-| Y15 | Spare; START moved to mechanical RLY-03 | Unassigned |
-| Y16 | Spare / future | Unassigned |
+| Y01 | Parking / marker lamps | Direct only after current, inrush and thermal verification; otherwise dedicated driver |
+| Y02 | Headlamp relay command | Relay/driver command only; verify downstream interface |
+| Y03 | High-beam relay command | Relay/driver command only; verify downstream interface |
+| Y04 | Left turn output | Direct only after current, inrush and thermal verification; otherwise dedicated driver |
+| Y05 | Right turn output | Direct only after current, inrush and thermal verification; otherwise dedicated driver |
+| Y06 | Horn relay command — reserved | Relay/driver command only; verify downstream interface |
+| Y07 | Spare | Unassigned |
+| Y08 | Hatch release | Direct only after current, inrush and thermal verification; otherwise dedicated driver |
+| Y09 | Fuel-door release | Direct only after current, inrush and thermal verification; otherwise dedicated driver |
+| Y10 | Independent fog-light relay command | Relay/driver command only; verify downstream interface |
+| Y11 | Spare | Unassigned |
+| Y12 | Spare | Unassigned |
+| Y13 | Spare | Unassigned |
+| Y14 | Wiper LOW control | Relay/driver command only; verify downstream interface |
+| Y15 | Wiper HIGH control | Relay/driver command only; verify downstream interface |
+| Y16 | Washer control | Direct only after current, inrush and thermal verification; otherwise dedicated driver |
 
-This table now matches the redrawn SVG baseline and supersedes the older conflicting Y-channel table. Selected window/lock drivers use Pi-safe logic control, not OPMSD16 12V outputs. Their exact GPIO/interface terminals remain to be verified.
+- Four spare outputs: **Y07, Y11, Y12, Y13**.
+- Rear defrost: **Pico 1 GP9 → Mechanical Relay A IN4 / channel 4 → automotive rear-defrost relay coil**. Y07 is no longer a defrost command.
+- Independent fog lamps: protected/conditioned switch request → **Pico 2 GP22**; command through **I/O Board B1 → Output Interface 2 input 2B / output 2C → Output Board X10 → Y10 → fog-light relay command**. Fog operation must not require the headlamps and must not be cancelled by high beams. This firmware behavior is not implemented by this map update.
+- Horn Y06 remains reserved until the steering-wheel Pico code and horn-relay command path are verified.
+- Mechanical Relay A carries ACC, RUN, START and rear-defrost commands on channels 1–4 respectively; Mechanical Relay B channel 1 carries the A2/blower command from Pico 1 GP10. B channels 2–4 remain spare. The owned hardware consists of two separate four-channel 3–3.3 V relay boards; the older single eight-channel 12 V board description above is superseded.
+- Puddle/courtesy lighting from the older table is **not assigned by this revision**; the feature remains pending allocation rather than being silently removed.
+- Window and lock motor commands use their dedicated drivers, not these 12 V outputs. Final electrical ratings, terminal verification, fuse/wire selection, safe startup and firmware bindings remain pending.
 
 ## Selected dual high-current H-bridge - window motor assignment
 
