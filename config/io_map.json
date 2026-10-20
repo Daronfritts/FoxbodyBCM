@@ -40,10 +40,10 @@
     "left_turn_output": "Y04",
     "right_turn_output": "Y05",
     "horn_control": "Y06",
-    "rear_defrost_control": "Y07",
+    "aux_07": "Y07",
     "hatch_release": "Y08",
     "fuel_door_release": "Y09",
-    "aux_10": "Y10",
+    "fog_lamp_control": "Y10",
     "aux_11": "Y11",
     "aux_12": "Y12",
     "aux_13": "Y13",
@@ -84,5 +84,33 @@
     "oil_pressure",
     "fuel_pressure"
   ],
-  "status": "provisional_until_terminal_and_load_verification"
+  "status": "provisional_until_terminal_and_load_verification",
+  "controller_assignment_plan": {
+    "status": "planned_not_implemented_or_bench_verified",
+    "fog_lamps": {
+      "request_controller": "Pico 2 Body Controls",
+      "request_gpio": "GP22",
+      "io_board_pin": "B1",
+      "output_interface": "Output Interface 2",
+      "interface_input": "2B",
+      "interface_output": "2C",
+      "output_board_input": "X10",
+      "output_board_output": "Y10",
+      "load": "fog_light_relay_command",
+      "operation": "independent_of_headlamps_and_high_beams"
+    },
+    "rear_defrost": {
+      "controller": "Pico 1 Power/Ignition",
+      "gpio": "GP9",
+      "relay_board": "Mechanical Relay A",
+      "input": "IN4",
+      "channel": 4,
+      "load": "rear_defrost_automotive_relay_coil",
+      "former_mosfet_output": "Y07_now_spare"
+    },
+    "horn": {
+      "output": "Y06",
+      "status": "reserved_pending_steering_wheel_pico_command_path_verification"
+    }
+  }
 }
