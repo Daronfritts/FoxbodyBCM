@@ -1,5 +1,24 @@
 # FoxbodyBCM - READ FIRST
 
+## Pico bench firmware update — 2026-10-21
+
+Read `firmware/README.md` before programming or wiring either Pico. Separate
+MicroPython source now lives in `firmware/pico1`, `firmware/pico2`, and
+`firmware/common`; root-level Python files are the Pi application.
+This is a partial bench release, not vehicle-ready firmware. Power relays,
+motors, wipers, releases and horn remain inhibited. Lighting logic and UART
+status are implemented; physical MCP outputs default disabled.
+
+The photographed owned Output Board is marked NPN/5 V on its input selection;
+the older assertion below that its control inputs are 12 V is superseded.
+Pico 2 -> 3.3 V MCP23017 -> two ULN2803A Output Interfaces is the planned control
+path, pending end-to-end bench verification. The two mechanical relay boards
+are separate four-channel 3–3.3 V active-low boards. See the newer firmware guide
+and docs/21 for assignments that supersede older SVG/generator labels.
+Brake lamps stay factory hardwired. Firmware has not been flashed or tested
+on the physical Picos. Pi-independent power and essential input paths, engine
+reset fallback, wiper park/braking, and motor supplies/truth tables remain open.
+
 Last updated: 2026-08-12
 
 This file is the first thing to read before changing BCM code, wiring plans or hardware assignments.

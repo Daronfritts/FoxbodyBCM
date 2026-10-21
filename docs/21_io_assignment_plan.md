@@ -89,7 +89,7 @@ This allocation matches `config/io_map.json` and supersedes earlier conflicting 
 
 - Four spare outputs: **Y07, Y11, Y12, Y13**.
 - Rear defrost: **Pico 1 GP9 → Mechanical Relay A IN4 / channel 4 → automotive rear-defrost relay coil**. Y07 is no longer a defrost command.
-- Independent fog lamps: protected/conditioned switch request → **Pico 2 GP22**; command through **I/O Board B1 → Output Interface 2 input 2B / output 2C → Output Board X10 → Y10 → fog-light relay command**. Fog operation must not require the headlamps and must not be cancelled by high beams. This firmware behavior is not implemented by this map update.
+- Independent fog lamps: protected/conditioned switch request → **Pico 2 GP22**; command through **I/O Board B1 → Output Interface 2 input 2B / output 2C → Output Board X10 → Y10 → fog-light relay command**. Fog operation must not require the headlamps and must not be cancelled by high beams. Local fog logic is now implemented in the Pico 2 bench firmware; physical output defaults disabled pending electrical verification.
 - Horn Y06 remains reserved until the steering-wheel Pico code and horn-relay command path are verified.
 - Mechanical Relay A carries ACC, RUN, START and rear-defrost commands on channels 1–4 respectively; Mechanical Relay B channel 1 carries the A2/blower command from Pico 1 GP10. B channels 2–4 remain spare. The owned hardware consists of two separate four-channel 3–3.3 V relay boards; the older single eight-channel 12 V board description above is superseded.
 - Puddle/courtesy lighting from the older table is **not assigned by this revision**; the feature remains pending allocation rather than being silently removed.
@@ -175,3 +175,13 @@ BCM/dash can consume ECU data for:
 Application modules must reference symbolic names such as `driver_door`, `window_driver_up`, `fuel_level`, `lock_driver_forward`, etc. Raw X00/Y01 addresses belong only in configuration/HAL files.
 
 That allows the physical I/O map to change without rewriting the behavior modules.
+
+## Pico firmware status — 2026-10-21
+
+See `../firmware/README.md` for both complete GP assignment tables, installation,
+bench checks and remaining design items. This is a partial bench release, not
+vehicle-ready firmware. Starter/RUN/ACC/defrost/blower control logic, motor
+control, wipers, releases and horn are not enabled. Physical MCP outputs default
+disabled. No Input Board X assignments were changed by this firmware update.
+The Pi RS485 input path and direct protected Pico inputs still require a final
+circuit-by-circuit ownership/fallback plan. Older SVGs are not updated here.

@@ -86,7 +86,7 @@
   ],
   "status": "provisional_until_terminal_and_load_verification",
   "controller_assignment_plan": {
-    "status": "planned_not_implemented_or_bench_verified",
+    "status": "partial_bench_firmware_added_not_flashed_or_electrically_verified",
     "fog_lamps": {
       "request_controller": "Pico 2 Body Controls",
       "request_gpio": "GP22",
@@ -97,7 +97,8 @@
       "output_board_input": "X10",
       "output_board_output": "Y10",
       "load": "fog_light_relay_command",
-      "operation": "independent_of_headlamps_and_high_beams"
+      "operation": "independent_of_headlamps_and_high_beams",
+      "firmware_status": "local_logic_implemented_physical_output_disabled_by_default"
     },
     "rear_defrost": {
       "controller": "Pico 1 Power/Ignition",
@@ -106,11 +107,13 @@
       "input": "IN4",
       "channel": 4,
       "load": "rear_defrost_automotive_relay_coil",
-      "former_mosfet_output": "Y07_now_spare"
+      "former_mosfet_output": "Y07_now_spare",
+      "firmware_status": "gpio_reserved_initialized_off_control_logic_not_implemented"
     },
     "horn": {
       "output": "Y06",
       "status": "reserved_pending_steering_wheel_pico_command_path_verification"
-    }
+    },
+    "firmware_guide": "firmware/README.md"
   }
 }
