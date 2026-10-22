@@ -19,8 +19,7 @@ def run():
             for name, number in config.INPUT_PINS.items()}
     debounce = {name: DebouncedInput(config.DEBOUNCE_MS) for name in pins}
     supervisor = Supervisor()
-    uart = UART(0, baudrate=config.UART_BAUD,
-                tx=Pin(config.UART_TX_PIN), rx=Pin(config.UART_RX_PIN), timeout=0)
+    uart = UART(0, baudrate=config.UART_BAUD, tx=Pin(config.UART_TX_PIN), rx=Pin(config.UART_RX_PIN), timeout=100, rxbuf=2048, txbuf=2048)
     link = Link(uart, "pico1", "pico2")
     last_report = time.ticks_ms()
     last_state = None
