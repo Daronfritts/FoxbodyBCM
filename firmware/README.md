@@ -2,8 +2,9 @@
 
 Updated 2026-10-21. These are MicroPython programs, separate from the Raspberry Pi
 Linux application at the repository root. They implement the October drawing pin
-assignments, not the earlier Pico 2 input/output layout. Nothing has been flashed
-or electrically tested by this change. No vehicle installation release is implied.
+assignments, not the earlier Pico 2 input/output layout. Both Picos have now been programmed and basic USB/jumper and UART checks were
+reported passing by the owner on 2026-10-20/21. These checks do not verify vehicle
+loads, power stages or installation readiness.
 
 ## Install through Thonny, one Pico at a time
 
@@ -75,7 +76,8 @@ in the wiring/fallback design before conversion.
 | Wiper park / intermittent / fog request | — | 20 / 21 / 22 |
 
 UART: P1 GP0 → P2 GP1; P2 GP0 → P1 GP1; common logic ground;
-115200 baud, UART0, 8N1. Bounded newline JSON carries version 1, source role,
+115200 baud, UART0, 8N1; both controllers use `timeout=100`, `rxbuf=2048`,
+`txbuf=2048`, matching the working bench settings. Bounded newline JSON carries version 1, source role,
 boolean local inputs and diagnostic state every 250 ms. Invalid frames do not
 refresh peer age. It is not a remote actuator command protocol and provides no
 security authorization. USB is for programming/diagnostics; a Pi bridge is not
@@ -149,3 +151,27 @@ Host tests check logic and fake buses, not MicroPython execution or real wiring.
 
 Do not call this complete BCM firmware. It is a versioned, testable bench starting
 point with explicit inhibited features instead of guessed vehicle behavior.
+
+## Owner-reported bench results — 2026-10-21
+
+- Pico 1 GP2 ignition simulation and automatic startup: passed.
+- Pico 2 fog, head/parking, high/low selection, left/right/hazard request logic
+  and automatic startup: passed.
+- Pico 1 -> Pico 2 telemetry and GP17 parking request: passed.
+- Pico 1 power-loss detection and automatic reconnection at Pico 2: passed.
+- Pico 2 local fog request while Pico 1 offline: passed.
+- Pico 2 -> Pico 1 receiver test after matching UART settings: ONLINE True,
+  PARSE ERRORS 0, valid Pico 2 message received.
+- Pico 1 normal main.py restored and starts in PARKED.
+
+The original UART setup failed to deliver valid telemetry in bench testing.
+Larger receive/transmit buffers and timeout=100 are the settings that passed;
+this does not establish the sole cause of every earlier failure. During manual
+editing, an indentation error and missing comma separately prevented Pico 1
+startup; those edits were corrected. Both UART statements are saved as single
+lines to simplify replacement in Thonny.
+
+No physical MCP/load outputs were enabled for these checks. Reverse-direction
+telemetry was verified with a temporary receiver test, not a full vehicle test.
+Next hardware step: verify the I/O Board supply, address and I2C connection with
+load outputs still disabled, then commission one interface/output channel.
