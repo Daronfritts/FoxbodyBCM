@@ -15,8 +15,9 @@ Pico 2 -> 3.3 V MCP23017 -> two ULN2803A Output Interfaces is the planned contro
 path, pending end-to-end bench verification. The two mechanical relay boards
 are separate four-channel 3–3.3 V active-low boards. See the newer firmware guide
 and docs/21 for assignments that supersede older SVG/generator labels.
-Brake lamps stay factory hardwired. Firmware has not been flashed or tested
-on the physical Picos. Pi-independent power and essential input paths, engine
+Brake lamps stay factory hardwired. Both Picos have been programmed; owner-reported basic startup, jumper-input and
+bidirectional UART checks passed on 2026-10-20/21. See firmware/README.md for the
+exact scope; vehicle load outputs remain disabled. Pi-independent power and essential input paths, engine
 reset fallback, wiper park/braking, and motor supplies/truth tables remain open.
 
 Last updated: 2026-08-12
