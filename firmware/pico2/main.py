@@ -16,8 +16,7 @@ def run():
     pins = {name: Pin(number, Pin.IN, Pin.PULL_UP if config.INPUT_ACTIVE_LOW
                      else Pin.PULL_DOWN) for name, number in config.INPUT_PINS.items()}
     debounce = {name: DebouncedInput(config.DEBOUNCE_MS) for name in pins}
-    uart = UART(0, baudrate=config.UART_BAUD,
-                tx=Pin(config.UART_TX_PIN), rx=Pin(config.UART_RX_PIN), timeout=0)
+    uart = UART(0, baudrate=config.UART_BAUD, tx=Pin(config.UART_TX_PIN), rx=Pin(config.UART_RX_PIN), timeout=100, rxbuf=2048, txbuf=2048)
     link = Link(uart, "pico2", "pico1")
     lighting = Lighting()
     outputs = None
